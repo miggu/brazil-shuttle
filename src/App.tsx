@@ -40,17 +40,9 @@ function App() {
                 <AirlineSelector selectedAirline={selectedAirline} onSelect={setSelectedAirline} />
             </div>
 
-            <div className="flex gap-8">
-                <div className="flex-1">
-                    <D3PriceChart data={dailyData} />
-                </div>
-
-                <div className="flex-1 min-w-[350px]">
-                    {/* Calendar Integration */}
-                    <div className="mt-6">
-                        <CalendarPicker onDateSelect={setTravelDate} />
-                    </div>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[400px]">
+                <D3PriceChart data={dailyData} />
+                <CalendarPicker onDateSelect={setTravelDate} />
             </div>
         </Layout>
     );

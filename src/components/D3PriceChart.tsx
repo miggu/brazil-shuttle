@@ -9,9 +9,17 @@ interface DataPoint {
 
 interface D3PriceChartProps {
   data: DataPoint[];
+  monthLabel?: string;
+  onPrevMonth?: () => void;
+  onNextMonth?: () => void;
 }
 
-const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
+const D3PriceChart: React.FC<D3PriceChartProps> = ({
+  data,
+  monthLabel,
+  onPrevMonth,
+  onNextMonth,
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const [dimensions, setDimensions] = React.useState({ width: 0, height: 0 });
@@ -153,9 +161,30 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
 
   return (
     <div className="w-full h-full min-h-[300px] bg-white rounded-xl shadow-sm p-4 relative">
-      <h3 className="text-gray-700 font-bold font-title mb-4">
-        Day of Purchase
-      </h3>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-gray-700 font-bold font-title text-lg">
+          Day of Purchase
+        </h3>
+        {monthLabel && (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onPrevMonth}
+              className="p-1 hover:bg-gray-100 rounded-full text-gray-500 transition-colors w-8 h-8 flex items-center justify-center cursor-pointer"
+            >
+              ←
+            </button>
+            <div className="font-semibold text-gray-800 text-sm w-32 text-center select-none">
+              {monthLabel}
+            </div>
+            <button
+              onClick={onNextMonth}
+              className="p-1 hover:bg-gray-100 rounded-full text-gray-500 transition-colors w-8 h-8 flex items-center justify-center cursor-pointer"
+            >
+              →
+            </button>
+          </div>
+        )}
+      </div>
       <div ref={containerRef} className="w-full h-[calc(100%-3rem)]">
         <svg ref={svgRef} className="w-full h-full overflow-visible"></svg>
       </div>

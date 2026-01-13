@@ -47,7 +47,7 @@ export const getMonthlyData = (
   month: number = 3, // Default to April (0-indexed)
 ) => {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const basePrice = 800;
+  const basePrice = 450;
   const dailyData: { date: Date; price: number }[] = [];
 
   for (let day = 1; day <= daysInMonth; day++) {

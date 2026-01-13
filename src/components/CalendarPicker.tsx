@@ -57,38 +57,36 @@ const CalendarPicker: React.FC<CalendarPickerProps> = ({ onDateSelect }) => {
   const nextMonth = () => setCurrentDate(prev => prev.clone().add(1, 'month'));
 
   return (
-    <div className="w-full max-w-[320px] mx-auto select-none">
-      <label className="block text-sm font-semibold text-gray-700 mb-2">Wished day for travel</label>
-      <div className="card p-4">
-        <div className="flex items-center justify-between mb-4 px-2">
-          <button
-            onClick={prevMonth}
-            className="p-1 hover:bg-gray-100 rounded-full text-gray-500 transition-colors w-8 h-8 flex items-center justify-center"
-          >
-            ←
-          </button>
-          <div className="font-semibold text-gray-800">
-            {currentDate.format('MMMM YYYY')}
+    <div className="w-full h-full min-h-[300px] bg-white rounded-xl shadow-sm p-4 relative select-none">
+      <h3 className="text-gray-700 font-semibold mb-4">Wished day for travel</h3>
+      <div className="flex items-center justify-between mb-4 px-2">
+        <button
+          onClick={prevMonth}
+          className="p-1 hover:bg-gray-100 rounded-full text-gray-500 transition-colors w-8 h-8 flex items-center justify-center"
+        >
+          ←
+        </button>
+        <div className="font-semibold text-gray-800">
+          {currentDate.format('MMMM YYYY')}
+        </div>
+        <button
+          onClick={nextMonth}
+          className="p-1 hover:bg-gray-100 rounded-full text-gray-500 transition-colors w-8 h-8 flex items-center justify-center"
+        >
+          →
+        </button>
+      </div>
+
+      <div className="grid grid-cols-7 gap-1 mb-2 text-center">
+        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
+          <div key={day} className="text-xs font-bold text-gray-400">
+            {day}
           </div>
-          <button
-            onClick={nextMonth}
-            className="p-1 hover:bg-gray-100 rounded-full text-gray-500 transition-colors w-8 h-8 flex items-center justify-center"
-          >
-            →
-          </button>
-        </div>
+        ))}
+      </div>
 
-        <div className="grid grid-cols-7 gap-1 mb-2 text-center">
-          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-            <div key={day} className="text-xs font-bold text-gray-400">
-              {day}
-            </div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-7 gap-1 text-center">
-          {days}
-        </div>
+      <div className="grid grid-cols-7 gap-1 text-center">
+        {days}
       </div>
     </div>
   );

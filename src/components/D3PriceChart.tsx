@@ -24,7 +24,7 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
     // Dimensions
     const width = 600;
     const height = 300;
-    const margin = { top: 20, right: 30, bottom: 40, left: 50 };
+    const margin = { top: 20, right: 10, bottom: 40, left: 10 }; // Minimized side margins
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
@@ -39,116 +39,16 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
 
     // Scales
     const xScale = d3
-      .scaleTime()
-      .domain(d3.extent(data, (d) => d.date) as [Date, Date])
-      .range([0, innerWidth]);
+      .scaleBand()
+      .domain(data.map((d) => d.date.toISOString())) // Use ISO string for uniqueness
+      .range([0, innerWidth])
+      .padding(0.2);
 
     const yScale = d3
       .scaleLinear()
-      .domain([
-        d3.min(data, (d) => d.price) || 0,
-        d3.max(data, (d) => d.price) || 2000,
-      ])
+      .domain([0, d3.max(data, (d) => d.price) || 2000]) // Start from 0 for bar charts usually
       .nice()
       .range([innerHeight, 0]);
-
-    // Line generator
-    const line = d3
-      .line<DataPoint>()
-      .x((d) => xScale(d.date))
-      .y((d) => yScale(d.price))
-      .curve(d3.curveMonotoneX);
-
-    // Area generator (for gradient fill)
-    const area = d3
-      .area<DataPoint>()
-      .x((d) => xScale(d.date))
-      .y0(innerHeight)
-      .y1((d) => yScale(d.price))
-      .curve(d3.curveMonotoneX);
-
-    // Gradient
-    const defs = svg.append("defs");
-    const gradient = defs
-      .append("linearGradient")
-      .attr("id", "area-gradient")
-      .attr("x1", "0%")
-      .attr("y1", "0%")
-      .attr("x2", "0%")
-      .attr("y2", "100%");
-
-    gradient
-      .append("stop")
-      .attr("offset", "0%")
-      .attr("stop-color", COLORS.accent) // Tailwind orange-600
-      .attr("stop-opacity", 0.4);
-
-    gradient
-      .append("stop")
-      .attr("offset", "100%")
-      .attr("stop-color", COLORS.accent)
-      .attr("stop-opacity", 0);
-
-    // Grid lines (Y)
-    g.append("g")
-      .attr("class", "grid")
-      .call(
-        d3
-          .axisLeft(yScale)
-          .tickSize(-innerWidth)
-          .tickFormat(() => ""),
-      )
-      .style("stroke-dasharray", "3 3")
-      .style("stroke-opacity", 0.1);
-
-    // Draw Area
-    g.append("path")
-      .datum(data)
-      .attr("fill", "url(#area-gradient)")
-      .attr("d", area);
-
-    // Draw Line
-    const path = g
-      .append("path")
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", COLORS.accent)
-      .attr("stroke-width", 3)
-      .attr("d", line);
-
-    // Animate Line
-    const totalLength = path.node()?.getTotalLength() || 0;
-    path
-      .attr("stroke-dasharray", totalLength + " " + totalLength)
-      .attr("stroke-dashoffset", totalLength)
-      .transition()
-      .duration(1500)
-      .ease(d3.easeCubicOut)
-      .attr("stroke-dashoffset", 0);
-
-    // Axes
-    const xAxis = d3
-      .axisBottom(xScale)
-      .ticks(5)
-      .tickFormat(d3.timeFormat(DATE_FORMATS.chart) as any); // Cast to any to fix type mismatch with D3/TS if needed, usually works
-
-    const yAxis = d3
-      .axisLeft(yScale)
-      .ticks(5)
-      .tickFormat((d) => `€${d}`);
-
-    g.append("g")
-      .attr("transform", `translate(0,${innerHeight})`)
-      .call(xAxis)
-      .attr("font-size", "10px")
-      .attr("color", COLORS.text.secondary); // gray-500
-
-    g.append("g")
-      .call(yAxis)
-      .attr("font-size", "10px")
-      .attr("color", COLORS.text.secondary)
-      .select(".domain")
-      .remove(); // Remove Y axis line for cleaner look
 
     // Tooltip interaction overlay
     const tooltip = d3
@@ -165,25 +65,23 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       .style("pointer-events", "none")
       .style("z-index", "50");
 
-    // Points
-    g.selectAll(".dot")
+    // Draw Bars
+    g.selectAll(".bar")
       .data(data)
       .enter()
-      .append("circle")
-      .attr("class", "dot")
-      .attr("cx", (d) => xScale(d.date))
-      .attr("cy", (d) => yScale(d.price))
-      .attr("r", 4)
-      .attr("fill", "#fff")
-      .attr("stroke", COLORS.accent)
-      .attr("stroke-width", 2)
-      .style("opacity", 0) // Hide initially
+      .append("rect")
+      .attr("class", "bar")
+      .attr("x", (d) => xScale(d.date.toISOString())!)
+      .attr("y", innerHeight) // Start from bottom for animation
+      .attr("width", xScale.bandwidth())
+      .attr("height", 0) // Start with 0 height
+      .attr("fill", COLORS.accent)
+      .attr("rx", 4) // Rounded top corners
+      .attr("ry", 4)
       .on("mouseover", function (_event, d) {
         d3.select(this)
-          .transition()
-          .duration(200)
-          .attr("r", 6)
-          .style("opacity", 1);
+          .attr("fill", COLORS.accentLight)
+          .style("cursor", "pointer");
 
         tooltip
           .style("visibility", "visible")
@@ -193,26 +91,62 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       })
       .on("mousemove", function (event) {
         tooltip
-          .style("top", event.pageY - 10 + "px")
-          .style("left", event.pageX + 10 + "px");
+          .style("top", event.pageY - 40 + "px")
+          .style("left", event.pageX - 20 + "px");
       })
       .on("mouseout", function () {
-        d3.select(this)
-          .transition()
-          .duration(200)
-          .attr("r", 4)
-          .style("opacity", 0); // Hide again
+        d3.select(this).attr("fill", COLORS.accent);
         tooltip.style("visibility", "hidden");
+      })
+      .transition()
+      .duration(800)
+      .ease(d3.easeCubicOut)
+      .attr("y", (d) => yScale(d.price))
+      .attr("height", (d) => innerHeight - yScale(d.price));
+
+    // Axes
+    const xAxis = d3
+      .axisBottom(
+        d3
+          .scaleTime()
+          .domain(d3.extent(data, (d) => d.date) as [Date, Date])
+          .range([0, innerWidth]),
+      ) // Trick to use time scale for axis labels but band for bars? No, simpler to use band axis
+      // Actually, for band scale, axisBottom works but labels might overlap.
+      // Let's use the band scale but format ticks manually or filter them.
+      // But standard band axis shows every label.
+      // Let's stick to the time scale trick for the axis ONLY if we want sparse ticks, but for "all days", band axis is fine.
+      // However, x-axis labels "Tu 13" might be too crowded for 30 days in 600px (20px per label).
+      // Let's try to just use every nth tick or just let D3 handle it if we use a time scale for the axis overlay.
+      // Let's use a time scale purely for the Axis generation to get nice "Tu 13" formatting without overcrowding.
+      .ticks(d3.timeDay.every(2)) // Show every 2nd day to avoid crowd? Or try all.
+      .tickFormat(d3.timeFormat(DATE_FORMATS.chartAxis) as any);
+
+    // To align the time-axis ticks with the bands, we need the range to match the band centers.
+    // Easier approach: Use the band scale for axis, but hide some ticks.
+    const axisGroup = g
+      .append("g")
+      .attr("transform", `translate(0,${innerHeight})`)
+      .call(
+        d3.axisBottom(xScale).tickFormat((d) => {
+          // d is ISO string. Parse back to date.
+          const date = new Date(d);
+          return d3.timeFormat(DATE_FORMATS.chartAxis)(date);
+        }),
+      )
+      .attr("font-size", "10px")
+      .attr("color", COLORS.text.secondary);
+
+    // Fix crowding: rotate text or hide every 2nd
+    axisGroup
+      .selectAll("text")
+      .style("text-anchor", "middle")
+      .attr("dy", "1em")
+      .each(function (_d, i) {
+        if (i % 2 !== 0) d3.select(this).remove(); // Show every 2nd label
       });
 
-    // Show dots on hover of the chart area generally (advanced) or just keep them hidden/visible on proximity?
-    // For simplicity/cleanliness, let's keep dots hidden until specific hover, or just show them all small.
-    // Let's fade them in after the line animation.
-    g.selectAll(".dot")
-      .transition()
-      .delay(1500)
-      .duration(500)
-      .style("opacity", 1);
+    axisGroup.select(".domain").remove(); // Remove line
 
     return () => {
       tooltip.remove();
@@ -222,7 +156,7 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
   return (
     <div className="w-full h-full min-h-[300px] bg-white rounded-xl shadow-sm p-4 relative">
       <h3 className="text-gray-700 font-semibold mb-4">
-        Price Trend (April 2026)
+        Outbound (April 2026)
       </h3>
       <svg ref={svgRef} className="w-full h-full overflow-visible"></svg>
     </div>

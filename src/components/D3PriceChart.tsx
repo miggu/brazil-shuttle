@@ -118,17 +118,6 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       .attr("y", (d) => yScale(d.price))
       .attr("height", (d) => innerHeight - yScale(d.price));
 
-    // Axes
-    const xAxis = d3
-      .axisBottom(
-        d3
-          .scaleTime()
-          .domain(d3.extent(data, (d) => d.date) as [Date, Date])
-          .range([0, innerWidth]),
-      )
-      .ticks(d3.timeDay.every(2))
-      .tickFormat(d3.timeFormat(DATE_FORMATS.chartAxis) as any);
-
     // To align the time-axis ticks with the bands, we need the range to match the band centers.
     // Easier approach: Use the band scale for axis, but hide some ticks.
     const axisGroup = g
@@ -144,13 +133,15 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       .attr("font-size", "10px")
       .attr("color", COLORS.text.secondary);
 
-    // Fix crowding: rotate text or hide every 2nd
+    // Fix crowding: show all if bars are wide enough, otherwise hide every 2nd
+    const showAllLabels = xScale.bandwidth() > 40;
+
     axisGroup
       .selectAll("text")
       .style("text-anchor", "middle")
       .attr("dy", "1em")
       .each(function (_d, i) {
-        if (i % 2 !== 0) d3.select(this).remove(); // Show every 2nd label
+        if (!showAllLabels && i % 2 !== 0) d3.select(this).remove(); // Show every 2nd label if crowded
       });
 
     axisGroup.select(".domain").remove(); // Remove line

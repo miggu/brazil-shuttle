@@ -58,11 +58,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="h-20 flex items-center justify-between px-8 bg-transparent">
-          <div className="flex items-r gap-4">
-            <span>Hello, Jeffrey Weinstein</span>
+        <header className="h-20 flex items-center justify-end px-8 bg-transparent">
+          <div className="flex items-center gap-4">
+            <span className="font-semibold text-gray-700">Hello, Customer</span>
             <div
-              className="w-10 h-10 rounded-full bg-gray-300 bg-cover bg-center"
+              className="w-10 h-10 rounded-full bg-gray-300 bg-cover bg-center ring-2 ring-white shadow-sm"
               style={{
                 backgroundImage: "url(https://i.pravatar.cc/150?img=12)",
               }}

@@ -19,9 +19,10 @@ function App() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   useEffect(() => {
-    // Fetch April 2026 daily data (Month is 0-indexed, so 3 is April)
-    const aprilData = getMonthlyData(2026, 3);
-    setDailyData(aprilData);
+    // Fetch January 2026 daily data (Month is 0-indexed, so 0 is January)
+    // representing "Day of Purchase" ~3 months before travel
+    const purchaseData = getMonthlyData(2026, 0);
+    setDailyData(purchaseData);
   }, []);
 
   return (

@@ -1,6 +1,6 @@
 /**
  * usage: node scripts/scrapeFlights.js
- * 
+ *
  * note: this is a skeleton. production scraping requires handling
  * captcha, dynamic selectors, and ip rotation.
  */
@@ -9,32 +9,32 @@
 // const puppeteer = require('puppeteer');
 
 (async () => {
-    console.log('Starting flight scraper for MAD -> GRU...');
+  console.log("Starting flight scraper for MAD -> GRU...");
 
-    await new Promise(resolve => setTimeout(resolve, 800)); // Simul init
+  await new Promise((resolve) => setTimeout(resolve, 800)); // Simul init
 
-    console.log('Launching browser...');
-    // const browser = await puppeteer.launch({ headless: false });
-    // const page = await browser.newPage();
-    
-    console.log('Navigating to flight search engine...');
-    // await page.goto('https://www.google.com/travel/flights');
+  console.log("Launching browser...");
+  // const browser = await puppeteer.launch({ headless: false });
+  // const page = await browser.newPage();
 
-    console.log('Inputting parameters: Origin=MAD, Dest=GRU, Date=2024-06-15');
-    // await page.type('[aria-label="Where from?"]', 'Madrid');
-    // await page.type('[aria-label="Where to?"]', 'Sao Paulo');
+  console.log("Navigating to flight search engine...");
+  // await page.goto('https://www.google.com/travel/flights');
 
-    // await new Promise(r => setTimeout(r, 2000)); // Wait for results
+  console.log("Inputting parameters: Origin=MAD, Dest=GRU, Date=2024-06-15");
+  // await page.type('[aria-label="Where from?"]', 'Madrid');
+  // await page.type('[aria-label="Where to?"]', 'Sao Paulo');
 
-    const mockResults = [
-        { airline: 'Latam', price: 850, time: '22:00' },
-        { airline: 'Iberia', price: 920, time: '12:00' },
-    ];
+  // await new Promise(r => setTimeout(r, 2000)); // Wait for results
 
-    console.log('Found results:', mockResults);
+  const mockResults = [
+    { airline: "Latam", price: 850, time: "22:00" },
+    { airline: "Iberia", price: 920, time: "12:00" },
+  ];
 
-    console.log('Closing browser...');
-    // await browser.close();
+  console.log("Found results:", mockResults);
 
-    console.log('Scrape complete.');
+  console.log("Closing browser...");
+  // await browser.close();
+
+  console.log("Scrape complete.");
 })();

@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import * as d3 from 'd3';
+import React, { useRef, useEffect } from "react";
+import * as d3 from "d3";
 
 interface DataPoint {
   date: Date;
@@ -37,43 +37,53 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // Scales
-    const xScale = d3.scaleTime()
-      .domain(d3.extent(data, d => d.date) as [Date, Date])
+    const xScale = d3
+      .scaleTime()
+      .domain(d3.extent(data, (d) => d.date) as [Date, Date])
       .range([0, innerWidth]);
 
-    const yScale = d3.scaleLinear()
-      .domain([d3.min(data, d => d.price) || 0, d3.max(data, d => d.price) || 2000])
+    const yScale = d3
+      .scaleLinear()
+      .domain([
+        d3.min(data, (d) => d.price) || 0,
+        d3.max(data, (d) => d.price) || 2000,
+      ])
       .nice()
       .range([innerHeight, 0]);
 
     // Line generator
-    const line = d3.line<DataPoint>()
-      .x(d => xScale(d.date))
-      .y(d => yScale(d.price))
+    const line = d3
+      .line<DataPoint>()
+      .x((d) => xScale(d.date))
+      .y((d) => yScale(d.price))
       .curve(d3.curveMonotoneX);
 
     // Area generator (for gradient fill)
-    const area = d3.area<DataPoint>()
-      .x(d => xScale(d.date))
+    const area = d3
+      .area<DataPoint>()
+      .x((d) => xScale(d.date))
       .y0(innerHeight)
-      .y1(d => yScale(d.price))
+      .y1((d) => yScale(d.price))
       .curve(d3.curveMonotoneX);
 
     // Gradient
     const defs = svg.append("defs");
-    const gradient = defs.append("linearGradient")
+    const gradient = defs
+      .append("linearGradient")
       .attr("id", "area-gradient")
       .attr("x1", "0%")
       .attr("y1", "0%")
       .attr("x2", "0%")
       .attr("y2", "100%");
 
-    gradient.append("stop")
+    gradient
+      .append("stop")
       .attr("offset", "0%")
       .attr("stop-color", "#EA580C") // Tailwind orange-600
       .attr("stop-opacity", 0.4);
 
-    gradient.append("stop")
+    gradient
+      .append("stop")
       .attr("offset", "100%")
       .attr("stop-color", "#EA580C")
       .attr("stop-opacity", 0);
@@ -81,9 +91,11 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
     // Grid lines (Y)
     g.append("g")
       .attr("class", "grid")
-      .call(d3.axisLeft(yScale)
-        .tickSize(-innerWidth)
-        .tickFormat(() => "")
+      .call(
+        d3
+          .axisLeft(yScale)
+          .tickSize(-innerWidth)
+          .tickFormat(() => ""),
       )
       .style("stroke-dasharray", "3 3")
       .style("stroke-opacity", 0.1);
@@ -95,7 +107,8 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       .attr("d", area);
 
     // Draw Line
-    const path = g.append("path")
+    const path = g
+      .append("path")
       .datum(data)
       .attr("fill", "none")
       .attr("stroke", "#EA580C")
@@ -113,13 +126,15 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       .attr("stroke-dashoffset", 0);
 
     // Axes
-    const xAxis = d3.axisBottom(xScale)
+    const xAxis = d3
+      .axisBottom(xScale)
       .ticks(5)
-      .tickFormat(d3.timeFormat("%b %d") as any); // Cast to any to fix type mismatch with D3/TS if needed, usually works 
+      .tickFormat(d3.timeFormat("%b %d") as any); // Cast to any to fix type mismatch with D3/TS if needed, usually works
 
-    const yAxis = d3.axisLeft(yScale)
+    const yAxis = d3
+      .axisLeft(yScale)
       .ticks(5)
-      .tickFormat(d => `€${d}`);
+      .tickFormat((d) => `€${d}`);
 
     g.append("g")
       .attr("transform", `translate(0,${innerHeight})`)
@@ -131,10 +146,13 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       .call(yAxis)
       .attr("font-size", "10px")
       .attr("color", "#6B7280")
-      .select(".domain").remove(); // Remove Y axis line for cleaner look
+      .select(".domain")
+      .remove(); // Remove Y axis line for cleaner look
 
     // Tooltip interaction overlay
-    const tooltip = d3.select("body").append("div")
+    const tooltip = d3
+      .select("body")
+      .append("div")
       .attr("class", "tooltip")
       .style("position", "absolute")
       .style("visibility", "hidden")
@@ -149,10 +167,11 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
     // Points
     g.selectAll(".dot")
       .data(data)
-      .enter().append("circle")
+      .enter()
+      .append("circle")
       .attr("class", "dot")
-      .attr("cx", d => xScale(d.date))
-      .attr("cy", d => yScale(d.price))
+      .attr("cx", (d) => xScale(d.date))
+      .attr("cy", (d) => yScale(d.price))
       .attr("r", 4)
       .attr("fill", "#fff")
       .attr("stroke", "#EA580C")
@@ -160,21 +179,26 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       .style("opacity", 0) // Hide initially
       .on("mouseover", function (_event, d) {
         d3.select(this)
-          .transition().duration(200)
+          .transition()
+          .duration(200)
           .attr("r", 6)
           .style("opacity", 1);
 
-        tooltip.style("visibility", "visible")
-          .html(`<strong>${d3.timeFormat("%B %d")(d.date)}</strong><br/>€${d.price}`);
+        tooltip
+          .style("visibility", "visible")
+          .html(
+            `<strong>${d3.timeFormat("%B %d")(d.date)}</strong><br/>€${d.price}`,
+          );
       })
       .on("mousemove", function (event) {
         tooltip
-          .style("top", (event.pageY - 10) + "px")
-          .style("left", (event.pageX + 10) + "px");
+          .style("top", event.pageY - 10 + "px")
+          .style("left", event.pageX + 10 + "px");
       })
       .on("mouseout", function () {
         d3.select(this)
-          .transition().duration(200)
+          .transition()
+          .duration(200)
           .attr("r", 4)
           .style("opacity", 0); // Hide again
         tooltip.style("visibility", "hidden");
@@ -192,12 +216,13 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
     return () => {
       tooltip.remove();
     };
-
   }, [data]);
 
   return (
     <div className="w-full h-full min-h-[300px] bg-white rounded-xl shadow-sm p-4 relative">
-      <h3 className="text-gray-700 font-semibold mb-4">Price Trend (April 2026)</h3>
+      <h3 className="text-gray-700 font-semibold mb-4">
+        Price Trend (April 2026)
+      </h3>
       <svg ref={svgRef} className="w-full h-full overflow-visible"></svg>
     </div>
   );

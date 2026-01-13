@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #F3F4F6;
-  --color-card: #FFFFFF;
-  --color-accent: #EA580C;
-  --font-sans: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --color-primary: #f3f4f6;
+  --color-card: #ffffff;
+  --color-accent: #ea580c;
+  --font-sans: "Inter", system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 @layer components {
-    .card {
-        @apply bg-card rounded-2xl shadow-sm p-6;
-    }
+  .card {
+    @apply bg-card rounded-2xl shadow-sm p-6;
+  }
 }
 
 body {
-    @apply bg-primary text-gray-800 font-sans;
+  @apply bg-primary text-gray-800 font-sans;
 }

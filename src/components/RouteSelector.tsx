@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-type RouteType = 'MAD-GRU' | 'GRU-MAD';
+type RouteType = "MAD-GRU" | "GRU-MAD";
 
 interface RouteSelectorProps {
   route: RouteType;
@@ -22,26 +22,26 @@ const RouteSelector: React.FC<RouteSelectorProps> = ({ route, onChange }) => {
           className={`
                         absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-lg shadow-sm bg-white border border-gray-100
                         transition-all duration-300 ease-out
-                        ${route === 'MAD-GRU' ? 'left-1' : 'left-[calc(50%+2px)]'}
+                        ${route === "MAD-GRU" ? "left-1" : "left-[calc(50%+2px)]"}
                     `}
         ></div>
 
         {/* Buttons */}
         <button
-          onClick={() => onChange('MAD-GRU')}
+          onClick={() => onChange("MAD-GRU")}
           className={`
                         relative z-10 flex-1 py-2 text-sm font-medium transition-colors duration-200
-                        ${route === 'MAD-GRU' ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700'}
+                        ${route === "MAD-GRU" ? "text-gray-900" : "text-gray-500 hover:text-gray-700"}
                     `}
         >
           MAD → GRU
         </button>
 
         <button
-          onClick={() => onChange('GRU-MAD')}
+          onClick={() => onChange("GRU-MAD")}
           className={`
                         relative z-10 flex-1 py-2 text-sm font-medium transition-colors duration-200
-                        ${route === 'GRU-MAD' ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700'}
+                        ${route === "GRU-MAD" ? "text-gray-900" : "text-gray-500 hover:text-gray-700"}
                     `}
         >
           GRU → MAD

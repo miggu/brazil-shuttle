@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 
 interface CalendarPickerProps {
@@ -6,10 +6,15 @@ interface CalendarPickerProps {
 }
 
 const CalendarPicker: React.FC<CalendarPickerProps> = ({ onDateSelect }) => {
-  // State now holds a moment object for the current displayed month
-  const [currentDate, setCurrentDate] = useState(moment());
-  // Selected date state
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  // State now holds a moment object for the current displayed month, defaulting to 90 days from now
+  const [currentDate, setCurrentDate] = useState(moment().add(90, 'days'));
+  // Selected date state, default to the day 90 days from now
+  const [selectedDate, setSelectedDate] = useState<string | null>(moment().add(90, 'days').format('YYYY-MM-DD'));
+
+  // Trigger onDateSelect on mount so app knows the default
+  useEffect(() => {
+    onDateSelect?.(moment().add(90, 'days').toDate());
+  }, []);
 
   const daysInMonth = currentDate.daysInMonth();
   const firstDayOfWeek = currentDate.clone().startOf('month').day(); // 0-6 (Sun-Sat)
@@ -52,35 +57,38 @@ const CalendarPicker: React.FC<CalendarPickerProps> = ({ onDateSelect }) => {
   const nextMonth = () => setCurrentDate(prev => prev.clone().add(1, 'month'));
 
   return (
-    <div className="card w-full max-w-[320px] mx-auto p-4 select-none">
-      <div className="flex items-center justify-between mb-4 px-2">
-        <button
-          onClick={prevMonth}
-          className="p-1 hover:bg-gray-100 rounded-full text-gray-500 transition-colors w-8 h-8 flex items-center justify-center"
-        >
-          ←
-        </button>
-        <div className="font-semibold text-gray-800">
-          {currentDate.format('MMMM YYYY')}
-        </div>
-        <button
-          onClick={nextMonth}
-          className="p-1 hover:bg-gray-100 rounded-full text-gray-500 transition-colors w-8 h-8 flex items-center justify-center"
-        >
-          →
-        </button>
-      </div>
-
-      <div className="grid grid-cols-7 gap-1 mb-2 text-center">
-        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-          <div key={day} className="text-xs font-bold text-gray-400">
-            {day}
+    <div className="w-full max-w-[320px] mx-auto select-none">
+      <label className="block text-sm font-semibold text-gray-700 mb-2">Wished day for travel</label>
+      <div className="card p-4">
+        <div className="flex items-center justify-between mb-4 px-2">
+          <button
+            onClick={prevMonth}
+            className="p-1 hover:bg-gray-100 rounded-full text-gray-500 transition-colors w-8 h-8 flex items-center justify-center"
+          >
+            ←
+          </button>
+          <div className="font-semibold text-gray-800">
+            {currentDate.format('MMMM YYYY')}
           </div>
-        ))}
-      </div>
+          <button
+            onClick={nextMonth}
+            className="p-1 hover:bg-gray-100 rounded-full text-gray-500 transition-colors w-8 h-8 flex items-center justify-center"
+          >
+            →
+          </button>
+        </div>
 
-      <div className="grid grid-cols-7 gap-1 text-center">
-        {days}
+        <div className="grid grid-cols-7 gap-1 mb-2 text-center">
+          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
+            <div key={day} className="text-xs font-bold text-gray-400">
+              {day}
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-7 gap-1 text-center">
+          {days}
+        </div>
       </div>
     </div>
   );

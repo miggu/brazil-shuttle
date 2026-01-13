@@ -29,22 +29,21 @@ const PriceChart: React.FC<PriceChartProps> = ({ data }) => {
 
             <div className="flex items-end justify-between h-[200px] gap-4">
                 {data.map((point, index) => {
-                    const isToday = index === 2; // Mock "Today"
+                    // const isToday = index === 2; // Mock "Today"
                     return (
-                        <div key={point.day} className="flex flex-col items-center flex-1 gap-3">
-                            {isToday && (
-                                <div className="bg-gray-800 text-white px-3 py-1 rounded-full text-xs font-bold -mb-2 z-10">
-                                    ${point.price}
+                        <div key={index} className="flex flex-col items-center gap-2 group cursor-pointer">
+                            <div className="relative w-12 h-40 bg-gray-100 rounded-lg overflow-hidden flex items-end">
+                                <div
+                                    className={`w-full transition-all duration-500 hover:opacity-80 ${index === 4 ? 'bg-orange-500' : 'bg-gray-300'}`}
+                                    style={{ height: `${(point.price / maxPrice) * 100}%` }}
+                                ></div>
+
+                                {/* Tooltip */}
+                                <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                                    €{point.price}
                                 </div>
-                            )}
-                            <div
-                                className={`w-full max-w-[40px] rounded-full transition-all duration-500 relative ${isToday ? 'bg-gray-800' : 'bg-gray-200'}`}
-                                style={{ height: `${getBarHeight(point.price)}%` }}
-                            >
                             </div>
-                            <span className={`text-sm w-8 h-8 flex items-center justify-center rounded-full ${isToday ? 'bg-gray-200 font-bold text-gray-800' : 'text-gray-400 font-normal'}`}>
-                                {point.day.charAt(0)}
-                            </span>
+                            <span className="text-xs text-gray-500 font-medium">{point.month}</span>
                         </div>
                     )
                 })}

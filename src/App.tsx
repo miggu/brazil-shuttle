@@ -1,18 +1,25 @@
 import { useState, useEffect } from 'react';
 import Layout from './components/Layout';
-import PriceChart from './components/PriceChart';
 import FlightCard from './components/FlightCard';
 import CalendarPicker from './components/CalendarPicker';
 import RouteSelector from './components/RouteSelector';
-import { getMockFlightData, FlightData } from './services/flightData';
+import D3PriceChart from './components/D3PriceChart';
+import { getMockFlightData, getApril2026Data, FlightData } from './services/flightData';
 
 function App() {
     const [route, setRoute] = useState<'MAD-GRU' | 'GRU-MAD'>('MAD-GRU');
     const [data, setData] = useState<FlightData | null>(null);
+    const [dailyData, setDailyData] = useState<{ date: Date; price: number }[]>([]);
+    const [travelDate, setTravelDate] = useState<Date | null>(null);
 
     useEffect(() => {
-        setData(getMockFlightData());
-    }, []);
+        // Fetch mock flight data
+        setData(getMockFlightData(travelDate || undefined));
+
+        // Fetch April 2026 daily data
+        const aprilData = getApril2026Data();
+        setDailyData(aprilData);
+    }, [travelDate]);
 
     if (!data) return <Layout><div className="flex items-center justify-center h-full text-gray-400">Loading...</div></Layout>;
 
@@ -27,7 +34,7 @@ function App() {
             </div>
 
             <div className="mb-8">
-                <div className="grid grid-cols-4 gap-6">
+                <div className="airlines grid grid-cols-4 gap-6">
                     <div className="card bg-accent text-white">
                         <p className="m-0 opacity-90 text-sm">Best Price ({route === 'MAD-GRU' ? 'MAD' : 'GRU'})</p>
                         <h3 className="text-3xl font-bold mt-2">€{data.currentPrice}</h3>
@@ -41,7 +48,9 @@ function App() {
             </div>
 
             <div className="flex gap-8">
-                <PriceChart data={data.history} />
+                <div className="flex-1">
+                    <D3PriceChart data={dailyData} />
+                </div>
 
                 <div className="flex-1 min-w-[350px]">
                     <div className="flex justify-between items-center mb-4">
@@ -55,7 +64,7 @@ function App() {
 
                     {/* Calendar Integration */}
                     <div className="mt-6">
-                        <CalendarPicker onDateSelect={(date) => console.log('Selected:', date)} />
+                        <CalendarPicker onDateSelect={setTravelDate} />
                     </div>
                 </div>
             </div>

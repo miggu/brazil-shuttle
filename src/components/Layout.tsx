@@ -51,14 +51,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <div className="flex-1 flex flex-col">
         {/* Header */}
         <header className="h-20 flex items-center justify-between px-8 bg-transparent">
-          <h2 className="text-2xl font-semibold text-gray-800">Dashboard</h2>
+
 
           <div className="flex items-center gap-4">
-            <input
-              type="text"
-              placeholder="Search flights..."
-              className="px-4 py-2.5 rounded-full border-none bg-white w-[300px] outline-none shadow-sm focus:ring-2 focus:ring-orange-100 placeholder-gray-400"
-            />
+
             <div className="w-10 h-10 rounded-full bg-gray-300 bg-cover bg-center" style={{ backgroundImage: 'url(https://i.pravatar.cc/150?img=12)' }}></div>
           </div>
         </header>

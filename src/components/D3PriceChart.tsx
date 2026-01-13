@@ -75,12 +75,12 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       .attr("y", innerHeight) // Start from bottom for animation
       .attr("width", xScale.bandwidth())
       .attr("height", 0) // Start with 0 height
-      .attr("fill", COLORS.accent)
+      .attr("fill", COLORS.chartBar)
       .attr("rx", 4) // Rounded top corners
       .attr("ry", 4)
       .on("mouseover", function (_event, d) {
         d3.select(this)
-          .attr("fill", COLORS.accentLight)
+          .attr("fill", COLORS.chartBarHover)
           .style("cursor", "pointer");
 
         tooltip

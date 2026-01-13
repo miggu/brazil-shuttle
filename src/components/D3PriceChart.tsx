@@ -12,41 +12,55 @@ interface D3PriceChartProps {
 }
 
 const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const [dimensions, setDimensions] = React.useState({ width: 0, height: 0 });
 
   useEffect(() => {
-    if (!data || data.length === 0 || !svgRef.current) return;
+    if (!containerRef.current) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      if (!entries || entries.length === 0) return;
+      const { width, height } = entries[0].contentRect;
+      setDimensions({ width, height });
+    });
+
+    resizeObserver.observe(containerRef.current);
+
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!data || data.length === 0 || !svgRef.current || dimensions.width === 0)
+      return;
 
     // Clear previous render
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
-    // Dimensions
-    const width = 600;
-    const height = 300;
-    const margin = { top: 20, right: 10, bottom: 40, left: 10 }; // Minimized side margins
+    // Dimensions from state
+    const { width, height } = dimensions;
+    const margin = { top: 20, right: 10, bottom: 40, left: 10 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
     // Setup chart group
     const g = svg
-      .attr("width", "100%")
-      .attr("height", "100%")
-      .attr("viewBox", `0 0 ${width} ${height}`)
-      .attr("preserveAspectRatio", "none")
+      .attr("width", width)
+      .attr("height", height)
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // Scales
     const xScale = d3
       .scaleBand()
-      .domain(data.map((d) => d.date.toISOString())) // Use ISO string for uniqueness
+      .domain(data.map((d) => d.date.toISOString()))
       .range([0, innerWidth])
       .padding(0.2);
 
     const yScale = d3
       .scaleLinear()
-      .domain([0, d3.max(data, (d) => d.price) || 2000]) // Start from 0 for bar charts usually
+      .domain([0, d3.max(data, (d) => d.price) || 2000])
       .nice()
       .range([innerHeight, 0]);
 
@@ -104,6 +118,17 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       .attr("y", (d) => yScale(d.price))
       .attr("height", (d) => innerHeight - yScale(d.price));
 
+    // Axes
+    const xAxis = d3
+      .axisBottom(
+        d3
+          .scaleTime()
+          .domain(d3.extent(data, (d) => d.date) as [Date, Date])
+          .range([0, innerWidth]),
+      )
+      .ticks(d3.timeDay.every(2))
+      .tickFormat(d3.timeFormat(DATE_FORMATS.chartAxis) as any);
+
     // To align the time-axis ticks with the bands, we need the range to match the band centers.
     // Easier approach: Use the band scale for axis, but hide some ticks.
     const axisGroup = g
@@ -133,14 +158,16 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
     return () => {
       tooltip.remove();
     };
-  }, [data]);
+  }, [data, dimensions]);
 
   return (
     <div className="w-full h-full min-h-[300px] bg-white rounded-xl shadow-sm p-4 relative">
       <h3 className="text-gray-700 font-bold font-title mb-4">
         Day of Purchase
       </h3>
-      <svg ref={svgRef} className="w-full h-full overflow-visible"></svg>
+      <div ref={containerRef} className="w-full h-[calc(100%-3rem)]">
+        <svg ref={svgRef} className="w-full h-full overflow-visible"></svg>
+      </div>
     </div>
   );
 };

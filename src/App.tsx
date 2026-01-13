@@ -5,7 +5,7 @@ import CalendarPicker from "./components/CalendarPicker";
 import RouteSelector from "./components/RouteSelector";
 import D3PriceChart from "./components/D3PriceChart";
 import AirlineSelector from "./components/AirlineSelector";
-import { getApril2026Data } from "./services/flightData";
+import { getMonthlyData } from "./services/flightData";
 
 function App() {
   const [route, setRoute] = useState<"MAD-GRU" | "GRU-MAD">("MAD-GRU");
@@ -18,8 +18,8 @@ function App() {
   );
 
   useEffect(() => {
-    // Fetch April 2026 daily data
-    const aprilData = getApril2026Data();
+    // Fetch April 2026 daily data (Month is 0-indexed, so 3 is April)
+    const aprilData = getMonthlyData(2026, 3);
     setDailyData(aprilData);
   }, []);
 

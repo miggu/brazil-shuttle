@@ -41,14 +41,17 @@ export interface FlightData {
   offers: FlightOffer[];
 }
 
-// Helper to generate daily prices for April 2026
-export const getApril2026Data = () => {
-  const daysInMonth = 30; // April has 30 days
+// Helper to generate daily prices for a specific month
+export const getMonthlyData = (
+  year: number = 2026,
+  month: number = 3, // Default to April (0-indexed)
+) => {
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
   const basePrice = 800;
   const dailyData: { date: Date; price: number }[] = [];
 
   for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(2026, 3, day); // Month is 0-indexed (3 = April)
+    const date = new Date(year, month, day);
     const dayOfWeek = date.getDay(); // 0 = Sun, 6 = Sat
 
     let price = basePrice + (Math.random() * 300 - 150); // +/- 150 variation

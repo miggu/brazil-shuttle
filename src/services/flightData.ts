@@ -91,7 +91,9 @@ export const getMockFlightData = (travelDate: Date = new Date()): FlightData => 
         offers: [
             { id: 1, airline: 'Iberia', price: 845, time: '21:30', duration: '11h 10m', route: 'Direct' },
             { id: 2, airline: 'LATAM', price: 890, time: '10:45', duration: '11h 05m', route: 'Direct' },
-            { id: 3, airline: 'Air France', price: 780, time: '14:20', duration: '14h 30m', route: '1 Stop' },
+            { id: 3, airline: 'Air Europa', price: 780, time: '14:20', duration: '14h 30m', route: '1 Stop' },
+            { id: 4, airline: 'Air China', price: 650, time: '08:15', duration: '15h 45m', route: '1 Stop' },
+            { id: 5, airline: 'LATAM', price: 920, time: '18:00', duration: '10h 50m', route: 'Direct' },
         ]
     };
 };

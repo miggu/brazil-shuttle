@@ -25,9 +25,6 @@ function App() {
 
     if (!data) return <Layout><div className="flex items-center justify-center h-full text-gray-400">Loading...</div></Layout>;
 
-    // Filter offers based on selection
-
-
     return (
         <Layout>
             <div className="mb-8 flex justify-between items-end">
@@ -49,8 +46,6 @@ function App() {
                 </div>
 
                 <div className="flex-1 min-w-[350px]">
-
-
                     {/* Calendar Integration */}
                     <div className="mt-6">
                         <CalendarPicker onDateSelect={setTravelDate} />

@@ -104,24 +104,6 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       .attr("y", (d) => yScale(d.price))
       .attr("height", (d) => innerHeight - yScale(d.price));
 
-    // Axes
-    const xAxis = d3
-      .axisBottom(
-        d3
-          .scaleTime()
-          .domain(d3.extent(data, (d) => d.date) as [Date, Date])
-          .range([0, innerWidth]),
-      ) // Trick to use time scale for axis labels but band for bars? No, simpler to use band axis
-      // Actually, for band scale, axisBottom works but labels might overlap.
-      // Let's use the band scale but format ticks manually or filter them.
-      // But standard band axis shows every label.
-      // Let's stick to the time scale trick for the axis ONLY if we want sparse ticks, but for "all days", band axis is fine.
-      // However, x-axis labels "Tu 13" might be too crowded for 30 days in 600px (20px per label).
-      // Let's try to just use every nth tick or just let D3 handle it if we use a time scale for the axis overlay.
-      // Let's use a time scale purely for the Axis generation to get nice "Tu 13" formatting without overcrowding.
-      .ticks(d3.timeDay.every(2)) // Show every 2nd day to avoid crowd? Or try all.
-      .tickFormat(d3.timeFormat(DATE_FORMATS.chartAxis) as any);
-
     // To align the time-axis ticks with the bands, we need the range to match the band centers.
     // Easier approach: Use the band scale for axis, but hide some ticks.
     const axisGroup = g

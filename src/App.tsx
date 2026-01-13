@@ -43,7 +43,7 @@ function App() {
     <Layout>
       <div className="mb-8 flex justify-between items-end">
         <div>
-          <h2 className="text-3xl font-bold font-title mb-2 text-gray-800">
+          <h2 className="text-5xl font-bold font-title mb-2 text-gray-800">
             Brazil Shuttle
           </h2>
           <p className="text-gray-500">Track flight prices to Brazil.</p>

@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import * as d3 from "d3";
+import { COLORS, DATE_FORMATS } from "../constants/theme";
 
 interface DataPoint {
   date: Date;
@@ -79,13 +80,13 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
     gradient
       .append("stop")
       .attr("offset", "0%")
-      .attr("stop-color", "#EA580C") // Tailwind orange-600
+      .attr("stop-color", COLORS.accent) // Tailwind orange-600
       .attr("stop-opacity", 0.4);
 
     gradient
       .append("stop")
       .attr("offset", "100%")
-      .attr("stop-color", "#EA580C")
+      .attr("stop-color", COLORS.accent)
       .attr("stop-opacity", 0);
 
     // Grid lines (Y)
@@ -111,7 +112,7 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       .append("path")
       .datum(data)
       .attr("fill", "none")
-      .attr("stroke", "#EA580C")
+      .attr("stroke", COLORS.accent)
       .attr("stroke-width", 3)
       .attr("d", line);
 
@@ -129,7 +130,7 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
     const xAxis = d3
       .axisBottom(xScale)
       .ticks(5)
-      .tickFormat(d3.timeFormat("%b %d") as any); // Cast to any to fix type mismatch with D3/TS if needed, usually works
+      .tickFormat(d3.timeFormat(DATE_FORMATS.chart) as any); // Cast to any to fix type mismatch with D3/TS if needed, usually works
 
     const yAxis = d3
       .axisLeft(yScale)
@@ -140,12 +141,12 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       .attr("transform", `translate(0,${innerHeight})`)
       .call(xAxis)
       .attr("font-size", "10px")
-      .attr("color", "#6B7280"); // gray-500
+      .attr("color", COLORS.text.secondary); // gray-500
 
     g.append("g")
       .call(yAxis)
       .attr("font-size", "10px")
-      .attr("color", "#6B7280")
+      .attr("color", COLORS.text.secondary)
       .select(".domain")
       .remove(); // Remove Y axis line for cleaner look
 
@@ -174,7 +175,7 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       .attr("cy", (d) => yScale(d.price))
       .attr("r", 4)
       .attr("fill", "#fff")
-      .attr("stroke", "#EA580C")
+      .attr("stroke", COLORS.accent)
       .attr("stroke-width", 2)
       .style("opacity", 0) // Hide initially
       .on("mouseover", function (_event, d) {
@@ -187,7 +188,7 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
         tooltip
           .style("visibility", "visible")
           .html(
-            `<strong>${d3.timeFormat("%B %d")(d.date)}</strong><br/>€${d.price}`,
+            `<strong>${d3.timeFormat(DATE_FORMATS.chartTooltip)(d.date)}</strong><br/>€${d.price}`,
           );
       })
       .on("mousemove", function (event) {

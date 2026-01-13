@@ -21,7 +21,7 @@ const CalendarPicker: React.FC<CalendarPickerProps> = ({
 
   // Padding for previous month
   for (let i = 0; i < firstDayOfWeek; i++) {
-    days.push(<div key={`pad-${i}`} className="aspect-square"></div>);
+    days.push(<div key={`pad-${i}`} className="h-12 w-full"></div>);
   }
 
   // Days of current month
@@ -43,7 +43,7 @@ const CalendarPicker: React.FC<CalendarPickerProps> = ({
           onDateSelect(dateMoment.toDate());
         }}
         className={`
-                    p-2 flex items-center justify-center rounded-lg text-sm font-medium cursor-pointer transition-colors
+                    h-12 w-full flex items-center justify-center rounded-lg text-sm font-medium cursor-pointer transition-colors
                     ${isSelected ? "bg-accent text-white shadow-md" : "text-gray-700 hover:bg-gray-100"}
                     ${isToday && !isSelected ? "border border-accent text-accent" : ""}
                 `}

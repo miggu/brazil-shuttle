@@ -46,7 +46,7 @@ function App() {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[400px]">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6 h-[400px]">
         <D3PriceChart data={dailyData} />
         <CalendarPicker
           selectedDate={selectedDate}

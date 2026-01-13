@@ -29,7 +29,7 @@ function App() {
         <Layout>
             <div className="mb-8 flex justify-between items-end">
                 <div>
-                    <h2 className="text-2xl font-semibold mb-2 text-gray-800">Your Recent Projects</h2>
+                    <h2 className="text-2xl font-semibold mb-2 text-gray-800">Your Next Adventure</h2>
                     <p className="text-gray-500">Track changes in income over time.</p>
                 </div>
                 <RouteSelector route={route} onChange={setRoute} />

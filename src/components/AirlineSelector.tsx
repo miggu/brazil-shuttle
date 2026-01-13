@@ -29,7 +29,7 @@ const AirlineSelector: React.FC<AirlineSelectorProps> = ({ selectedAirline, onSe
               }
                         `}
           >
-            <div className="w-12 h-12 rounded-full overflow-hidden bg-white flex items-center justify-center mb-2 p-1">
+            <div className="w-12 h-12 overflow-hidden bg-white flex items-center justify-center mb-2 p-1">
               <img
                 src={`https://img.logo.dev/${airline.domain}?token=pk_QFOCjYseTyOzmrdy8_X9cA`}
                 alt={`${airline.name} logo`}

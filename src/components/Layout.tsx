@@ -31,7 +31,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center text-white font-bold">
             B
           </div>
-          <span className="text-xl font-bold text-gray-800">
+          <span className="text-xl font-bold font-title text-gray-800">
             Brazil Shuttle
           </span>
         </div>

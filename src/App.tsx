@@ -5,7 +5,7 @@ import CalendarPicker from './components/CalendarPicker';
 import RouteSelector from './components/RouteSelector';
 import D3PriceChart from './components/D3PriceChart';
 import AirlineSelector from './components/AirlineSelector';
-import { getMockFlightData, getApril2026Data, FlightData } from './services/flightData';
+import { getApril2026Data } from './services/flightData';
 
 function App() {
     const [route, setRoute] = useState<'MAD-GRU' | 'GRU-MAD'>('MAD-GRU');

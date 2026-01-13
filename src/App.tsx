@@ -16,6 +16,7 @@ function App() {
   const [dailyData, setDailyData] = useState<{ date: Date; price: number }[]>(
     [],
   );
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   useEffect(() => {
     // Fetch April 2026 daily data (Month is 0-indexed, so 3 is April)

@@ -2,13 +2,17 @@ import React, { useState } from "react";
 import moment from "moment";
 import { DATE_FORMATS } from "../constants/theme";
 
-const CalendarPicker: React.FC = () => {
+interface CalendarPickerProps {
+  selectedDate: Date | null;
+  onDateSelect: (date: Date) => void;
+}
+
+const CalendarPicker: React.FC<CalendarPickerProps> = ({
+  selectedDate,
+  onDateSelect,
+}) => {
   // State now holds a moment object for the current displayed month, defaulting to 90 days from now
   const [currentDate, setCurrentDate] = useState(moment().add(90, "days"));
-  // Selected date state, default to the day 90 days from now
-  const [selectedDate, setSelectedDate] = useState<string | null>(
-    moment().add(90, "days").format(DATE_FORMATS.api),
-  );
 
   const daysInMonth = currentDate.daysInMonth();
   const firstDayOfWeek = currentDate.clone().startOf("month").day(); // 0-6 (Sun-Sat)
@@ -25,14 +29,18 @@ const CalendarPicker: React.FC = () => {
     // Create a moment object for this specific day
     const dateMoment = currentDate.clone().date(d);
     const dateString = dateMoment.format(DATE_FORMATS.api);
-    const isSelected = selectedDate === dateString;
+
+    // Compare with prop selectedDate
+    const isSelected =
+      selectedDate &&
+      moment(selectedDate).format(DATE_FORMATS.api) === dateString;
     const isToday = moment().format(DATE_FORMATS.api) === dateString;
 
     days.push(
       <div
         key={d}
         onClick={() => {
-          setSelectedDate(dateString);
+          onDateSelect(dateMoment.toDate());
         }}
         className={`
                     p-2 flex items-center justify-center rounded-lg text-sm font-medium cursor-pointer transition-colors

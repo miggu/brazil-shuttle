@@ -13,5 +13,6 @@ export const DATE_FORMATS = {
   display: "MMMM YYYY",
   api: "YYYY-MM-DD",
   chart: "%b %d", // D3 format
+  chartAxis: "%a %d", // D3 format e.g. Tu 13
   chartTooltip: "%B %d", // D3 format
 };

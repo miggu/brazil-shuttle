@@ -3,9 +3,11 @@ import Layout from './components/Layout';
 import PriceChart from './components/PriceChart';
 import FlightCard from './components/FlightCard';
 import CalendarPicker from './components/CalendarPicker';
+import RouteSelector from './components/RouteSelector';
 import { getMockFlightData, FlightData } from './services/flightData';
 
 function App() {
+    const [route, setRoute] = useState<'MAD-GRU' | 'GRU-MAD'>('MAD-GRU');
     const [data, setData] = useState<FlightData | null>(null);
 
     useEffect(() => {
@@ -16,11 +18,18 @@ function App() {
 
     return (
         <Layout>
+            <div className="mb-8 flex justify-between items-end">
+                <div>
+                    <h2 className="text-2xl font-semibold mb-2 text-gray-800">Your Recent Projects</h2>
+                    <p className="text-gray-500">Track changes in income over time.</p>
+                </div>
+                <RouteSelector route={route} onChange={setRoute} />
+            </div>
+
             <div className="mb-8">
-                <h2 className="text-2xl font-semibold mb-6 text-gray-800">Your Recent Projects</h2>
                 <div className="grid grid-cols-4 gap-6">
                     <div className="card bg-accent text-white">
-                        <p className="m-0 opacity-90 text-sm">Best Price</p>
+                        <p className="m-0 opacity-90 text-sm">Best Price ({route === 'MAD-GRU' ? 'MAD' : 'GRU'})</p>
                         <h3 className="text-3xl font-bold mt-2">€{data.currentPrice}</h3>
                     </div>
                     <div className="card">

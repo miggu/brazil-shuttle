@@ -1,43 +1,41 @@
 import React, { useState } from 'react';
+import moment from 'moment';
 
 interface CalendarPickerProps {
   onDateSelect?: (date: Date) => void;
 }
 
 const CalendarPicker: React.FC<CalendarPickerProps> = ({ onDateSelect }) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  // State now holds a moment object for the current displayed month
+  const [currentDate, setCurrentDate] = useState(moment());
+  // Selected date state
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
-
-  const getDaysInMonth = (y: number, m: number) => new Date(y, m + 1, 0).getDate();
-  const getFirstDayOfMonth = (y: number, m: number) => new Date(y, m, 1).getDay();
-
-  const daysInMonth = getDaysInMonth(year, month);
-  const firstDay = getFirstDayOfMonth(year, month);
-
-  // Adjust for Monday start if needed, but standard US is Sunday=0. Let's stick to Sunday=0 for simplicity unless requested.
-  // Actually, reference designs often use Monday start for EU, but let's stick to standard JS for now (Sun=0).
+  const daysInMonth = currentDate.daysInMonth();
+  const firstDayOfWeek = currentDate.clone().startOf('month').day(); // 0-6 (Sun-Sat)
 
   const days = [];
+
   // Padding for previous month
-  for (let i = 0; i < firstDay; i++) {
+  for (let i = 0; i < firstDayOfWeek; i++) {
     days.push(<div key={`pad-${i}`} className="aspect-square"></div>);
   }
 
   // Days of current month
   for (let d = 1; d <= daysInMonth; d++) {
-    const date = new Date(year, month, d);
-    const isSelected = selectedDate?.toDateString() === date.toDateString();
-    const isToday = new Date().toDateString() === date.toDateString();
+    // Create a moment object for this specific day
+    const dateMoment = currentDate.clone().date(d);
+    const dateString = dateMoment.format('YYYY-MM-DD');
+    const isSelected = selectedDate === dateString;
+    const isToday = moment().format('YYYY-MM-DD') === dateString;
 
     days.push(
       <div
         key={d}
         onClick={() => {
-          setSelectedDate(date);
-          onDateSelect?.(date);
+          setSelectedDate(dateString);
+          // Return native Date object for compatibility
+          onDateSelect?.(dateMoment.toDate());
         }}
         className={`
                     aspect-square flex items-center justify-center rounded-lg text-sm font-medium cursor-pointer transition-colors
@@ -50,10 +48,8 @@ const CalendarPicker: React.FC<CalendarPickerProps> = ({ onDateSelect }) => {
     );
   }
 
-  const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
-  const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
-
-  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const prevMonth = () => setCurrentDate(prev => prev.clone().subtract(1, 'month'));
+  const nextMonth = () => setCurrentDate(prev => prev.clone().add(1, 'month'));
 
   return (
     <div className="card w-full max-w-[320px] mx-auto p-4 select-none">
@@ -65,7 +61,7 @@ const CalendarPicker: React.FC<CalendarPickerProps> = ({ onDateSelect }) => {
           ←
         </button>
         <div className="font-semibold text-gray-800">
-          {monthNames[month]} {year}
+          {currentDate.format('MMMM YYYY')}
         </div>
         <button
           onClick={nextMonth}

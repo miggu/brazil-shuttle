@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import moment from "moment";
+import { DATE_FORMATS } from "../constants/theme";
 
 const CalendarPicker: React.FC = () => {
   // State now holds a moment object for the current displayed month, defaulting to 90 days from now
   const [currentDate, setCurrentDate] = useState(moment().add(90, "days"));
   // Selected date state, default to the day 90 days from now
   const [selectedDate, setSelectedDate] = useState<string | null>(
-    moment().add(90, "days").format("YYYY-MM-DD"),
+    moment().add(90, "days").format(DATE_FORMATS.api),
   );
 
   const daysInMonth = currentDate.daysInMonth();
@@ -23,9 +24,9 @@ const CalendarPicker: React.FC = () => {
   for (let d = 1; d <= daysInMonth; d++) {
     // Create a moment object for this specific day
     const dateMoment = currentDate.clone().date(d);
-    const dateString = dateMoment.format("YYYY-MM-DD");
+    const dateString = dateMoment.format(DATE_FORMATS.api);
     const isSelected = selectedDate === dateString;
-    const isToday = moment().format("YYYY-MM-DD") === dateString;
+    const isToday = moment().format(DATE_FORMATS.api) === dateString;
 
     days.push(
       <div
@@ -62,7 +63,7 @@ const CalendarPicker: React.FC = () => {
           ←
         </button>
         <div className="font-semibold text-gray-800">
-          {currentDate.format("MMMM YYYY")}
+          {currentDate.format(DATE_FORMATS.display)}
         </div>
         <button
           onClick={nextMonth}

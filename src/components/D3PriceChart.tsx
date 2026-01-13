@@ -1,13 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import {
-  select,
-  scaleBand,
-  scaleLinear,
-  max,
-  timeFormat,
-  axisBottom,
-  easeCubicOut,
-} from "d3";
+import * as d3 from "d3";
 import { COLORS, DATE_FORMATS } from "../constants/theme";
 
 interface DataPoint {
@@ -43,7 +35,7 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       return;
 
     // Clear previous render
-    const svg = select(svgRef.current);
+    const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
     // Dimensions from state
@@ -60,18 +52,21 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
     // Scales
-    const xScale = scaleBand()
+    const xScale = d3
+      .scaleBand()
       .domain(data.map((d) => d.date.toISOString()))
       .range([0, innerWidth])
       .padding(0.2);
 
-    const yScale = scaleLinear()
-      .domain([0, max(data, (d) => d.price) || 2000])
+    const yScale = d3
+      .scaleLinear()
+      .domain([0, d3.max(data, (d) => d.price) || 2000])
       .nice()
       .range([innerHeight, 0]);
 
     // Tooltip interaction overlay
-    const tooltip = select("body")
+    const tooltip = d3
+      .select("body")
       .append("div")
       .attr("class", "tooltip")
       .style("position", "absolute")
@@ -98,14 +93,14 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       .attr("rx", 4) // Rounded top corners
       .attr("ry", 4)
       .on("mouseover", function (_event, d) {
-        select(this)
+        d3.select(this)
           .attr("fill", COLORS.chartBarHover)
           .style("cursor", "pointer");
 
         tooltip
           .style("visibility", "visible")
           .html(
-            `<strong>${timeFormat(DATE_FORMATS.chartTooltip)(d.date)}</strong><br/>€${d.price}`,
+            `<strong>${d3.timeFormat(DATE_FORMATS.chartTooltip)(d.date)}</strong><br/>€${d.price}`,
           );
       })
       .on("mousemove", function (event) {
@@ -114,12 +109,12 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
           .style("left", event.pageX - 20 + "px");
       })
       .on("mouseout", function () {
-        select(this).attr("fill", COLORS.chartBar);
+        d3.select(this).attr("fill", COLORS.chartBar);
         tooltip.style("visibility", "hidden");
       })
       .transition()
       .duration(800)
-      .ease(easeCubicOut)
+      .ease(d3.easeCubicOut)
       .attr("y", (d) => yScale(d.price))
       .attr("height", (d) => innerHeight - yScale(d.price));
 
@@ -129,10 +124,10 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       .append("g")
       .attr("transform", `translate(0,${innerHeight})`)
       .call(
-        axisBottom(xScale).tickFormat((d) => {
+        d3.axisBottom(xScale).tickFormat((d) => {
           // d is ISO string. Parse back to date.
           const date = new Date(d);
-          return timeFormat(DATE_FORMATS.chartAxis)(date);
+          return d3.timeFormat(DATE_FORMATS.chartAxis)(date);
         }),
       )
       .attr("font-size", "10px")
@@ -146,7 +141,7 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
       .style("text-anchor", "middle")
       .attr("dy", "1em")
       .each(function (_d, i) {
-        if (!showAllLabels && i % 2 !== 0) select(this).remove(); // Show every 2nd label if crowded
+        if (!showAllLabels && i % 2 !== 0) d3.select(this).remove(); // Show every 2nd label if crowded
       });
 
     axisGroup.select(".domain").remove(); // Remove line

@@ -16,7 +16,6 @@ function App() {
   const [dailyData, setDailyData] = useState<{ date: Date; price: number }[]>(
     [],
   );
-  const [travelDate, setTravelDate] = useState<Date | null>(null);
 
   useEffect(() => {
     // Fetch April 2026 daily data
@@ -48,7 +47,7 @@ function App() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-[400px]">
         <D3PriceChart data={dailyData} />
-        <CalendarPicker onDateSelect={setTravelDate} />
+        <CalendarPicker />
       </div>
     </Layout>
   );

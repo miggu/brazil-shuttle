@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 
-interface CalendarPickerProps {
-  onDateSelect?: (date: Date) => void;
-}
-
 const CalendarPicker: React.FC<CalendarPickerProps> = ({ onDateSelect }) => {
   // State now holds a moment object for the current displayed month, defaulting to 90 days from now
   const [currentDate, setCurrentDate] = useState(moment().add(90, "days"));
@@ -41,8 +37,6 @@ const CalendarPicker: React.FC<CalendarPickerProps> = ({ onDateSelect }) => {
         key={d}
         onClick={() => {
           setSelectedDate(dateString);
-          // Return native Date object for compatibility
-          onDateSelect?.(dateMoment.toDate());
         }}
         className={`
                     p-2 flex items-center justify-center rounded-lg text-sm font-medium cursor-pointer transition-colors

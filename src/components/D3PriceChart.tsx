@@ -4,11 +4,9 @@ import {
   scaleBand,
   scaleLinear,
   max,
-  extent,
   timeFormat,
   axisBottom,
   easeCubicOut,
-  timeDay,
 } from "d3";
 import { COLORS, DATE_FORMATS } from "../constants/theme";
 

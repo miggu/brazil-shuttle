@@ -1,18 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import moment from "moment";
 
-const CalendarPicker: React.FC<CalendarPickerProps> = ({ onDateSelect }) => {
+const CalendarPicker: React.FC = () => {
   // State now holds a moment object for the current displayed month, defaulting to 90 days from now
   const [currentDate, setCurrentDate] = useState(moment().add(90, "days"));
   // Selected date state, default to the day 90 days from now
   const [selectedDate, setSelectedDate] = useState<string | null>(
     moment().add(90, "days").format("YYYY-MM-DD"),
   );
-
-  // Trigger onDateSelect on mount so app knows the default
-  useEffect(() => {
-    onDateSelect?.(moment().add(90, "days").toDate());
-  }, []);
 
   const daysInMonth = currentDate.daysInMonth();
   const firstDayOfWeek = currentDate.clone().startOf("month").day(); // 0-6 (Sun-Sat)

@@ -7,6 +7,8 @@ export const COLORS = {
     primary: "#1f2937", // gray-800
     secondary: "#6b7280", // gray-500
   },
+  chartBar: "#64748b", // slate-500 (greyish blue)
+  chartBarHover: "#94a3b8", // slate-400
 };
 
 export const DATE_FORMATS = {

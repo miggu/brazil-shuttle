@@ -95,7 +95,7 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
           .style("left", event.pageX - 20 + "px");
       })
       .on("mouseout", function () {
-        d3.select(this).attr("fill", COLORS.accent);
+        d3.select(this).attr("fill", COLORS.chartBar);
         tooltip.style("visibility", "hidden");
       })
       .transition()

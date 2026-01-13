@@ -60,7 +60,7 @@ const CalendarPicker: React.FC<CalendarPickerProps> = ({
 
   return (
     <div className="w-full h-full min-h-[300px] bg-white rounded-xl shadow-sm p-4 relative select-none">
-      <h3 className="text-gray-700 font-semibold mb-4">
+      <h3 className="text-gray-700 font-bold font-title mb-4">
         Wished day for travel
       </h3>
       <div className="flex items-center justify-between mb-4 px-2">

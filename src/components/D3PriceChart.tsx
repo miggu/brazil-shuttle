@@ -137,7 +137,7 @@ const D3PriceChart: React.FC<D3PriceChartProps> = ({ data }) => {
 
   return (
     <div className="w-full h-full min-h-[300px] bg-white rounded-xl shadow-sm p-4 relative">
-      <h3 className="text-gray-700 font-semibold mb-4">
+      <h3 className="text-gray-700 font-bold font-title mb-4">
         Outbound (April 2026)
       </h3>
       <svg ref={svgRef} className="w-full h-full overflow-visible"></svg>

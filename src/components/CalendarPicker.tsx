@@ -43,7 +43,7 @@ const CalendarPicker: React.FC<CalendarPickerProps> = ({ onDateSelect }) => {
           onDateSelect?.(dateMoment.toDate());
         }}
         className={`
-                    aspect-square flex items-center justify-center rounded-lg text-sm font-medium cursor-pointer transition-colors
+                    p-2 flex items-center justify-center rounded-lg text-sm font-medium cursor-pointer transition-colors
                     ${isSelected ? 'bg-accent text-white shadow-md' : 'text-gray-700 hover:bg-gray-100'}
                     ${isToday && !isSelected ? 'border border-accent text-accent' : ''}
                 `}

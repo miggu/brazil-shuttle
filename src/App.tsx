@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 import Layout from './components/Layout';
-import FlightCard from './components/FlightCard';
+
 import CalendarPicker from './components/CalendarPicker';
 import RouteSelector from './components/RouteSelector';
 import D3PriceChart from './components/D3PriceChart';
+import AirlineSelector from './components/AirlineSelector';
 import { getMockFlightData, getApril2026Data, FlightData } from './services/flightData';
 
 function App() {
     const [route, setRoute] = useState<'MAD-GRU' | 'GRU-MAD'>('MAD-GRU');
+    const [selectedAirline, setSelectedAirline] = useState<string | null>(null);
     const [data, setData] = useState<FlightData | null>(null);
     const [dailyData, setDailyData] = useState<{ date: Date; price: number }[]>([]);
     const [travelDate, setTravelDate] = useState<Date | null>(null);
@@ -23,6 +25,9 @@ function App() {
 
     if (!data) return <Layout><div className="flex items-center justify-center h-full text-gray-400">Loading...</div></Layout>;
 
+    // Filter offers based on selection
+
+
     return (
         <Layout>
             <div className="mb-8 flex justify-between items-end">
@@ -34,17 +39,8 @@ function App() {
             </div>
 
             <div className="mb-8">
-                <div className="airlines grid grid-cols-4 gap-6">
-                    <div className="card bg-accent text-white">
-                        <p className="m-0 opacity-90 text-sm">Best Price ({route === 'MAD-GRU' ? 'MAD' : 'GRU'})</p>
-                        <h3 className="text-3xl font-bold mt-2">€{data.currentPrice}</h3>
-                    </div>
-                    <div className="card">
-                        <p className="m-0 text-gray-500 text-sm">Average (Week)</p>
-                        <h3 className="text-3xl font-bold mt-2 text-gray-800">€890</h3>
-                    </div>
-                    {/* More stats placeholder */}
-                </div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Filter by Airline</label>
+                <AirlineSelector selectedAirline={selectedAirline} onSelect={setSelectedAirline} />
             </div>
 
             <div className="flex gap-8">
@@ -53,14 +49,7 @@ function App() {
                 </div>
 
                 <div className="flex-1 min-w-[350px]">
-                    <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-xl font-semibold text-gray-800">Recent Offers</h3>
-                        <a href="#" className="text-gray-500 text-sm hover:text-accent">See all</a>
-                    </div>
 
-                    {data.offers.map(offer => (
-                        <FlightCard key={offer.id} offer={offer} />
-                    ))}
 
                     {/* Calendar Integration */}
                     <div className="mt-6">
